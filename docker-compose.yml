@@ -1,34 +1,45 @@
 data:
-  image: busybox
-  volumes:
-    - /usr/share/elasticsearch/data
-    - /var/lib/postgresql/data
-    - /usr/share/nginx/html/media
-  command: tail -f /dev/null
-  restart: always
+    image: busybox
+    volumes:
+        - /usr/share/elasticsearch/data
+        - /var/lib/postgresql/data
+        - /usr/share/nginx/html
+    command: tail -f /dev/null
+    restart: always
 
 elasticsearch:
-  image: elasticsearch
-  volumes_from:
-    - data
-  restart: always
+    image: elasticsearch
+    volumes_from:
+        - data
+    restart: always
 
 postgres:
-  image: postgres
-  environment:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: something
-  volumes_from:
-    - data
-  restart: always
+    image: postgres:9.4
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+    volumes_from:
+        - data
+    restart: always
 
 restyaboard:
-  build: .
-  links:
-    - elasticsearch:elasticsearch
-    - postgres:postgres
-  ports:
-    - 1234:80
-  volumes_from:
-    - data
-  restart: always
+    build: .
+    environment:
+        POSTGRES_APP_DB_HOST: postgres
+        POSTGRES_APP_DB_PORT: 5432
+        POSTGRES_APP_DB_NAME: restyaboard
+        POSTGRES_APP_DB_USER: restyaboard
+        POSTGRES_APP_DB_PASSWORD: restyaboard
+        TIMEZONE: Europe/Paris
+        WEB_SERVER_NAME: centos-docker
+        MAIL_DOMAIN: whisperingvault.net
+        # Optional
+        #MAIL_RELAYHOST: xxx 
+    links:
+        - elasticsearch:elasticsearch
+        - postgres:postgres
+    ports:
+        - 1234:80
+    volumes_from:
+        - data
+    restart: always
