@@ -27,7 +27,7 @@ function setupPostfix {
 }
 
 function extractArchive {
-    unzip /tmp/restyaboard.zip -d /usr/share/nginx/html
+    unzip -o /tmp/restyaboard.zip -d /usr/share/nginx/html
     chgrp www-data /usr/share/nginx/html
     cd /usr/share/nginx/html
     chown -R root:www-data *
@@ -82,7 +82,7 @@ function setupDatabase {
             # Populate database
             export PGUSER=${POSTGRES_APP_DB_USER}
             export PGPASSWORD=${POSTGRES_APP_DB_PASSWORD}
-            psql -d restyaboard -f /usr/share/nginx/html/sql/restyaboard_with_empty_data.sql
+            psql -P pager=off -d restyaboard -f /usr/share/nginx/html/sql/restyaboard_with_empty_data.sql
         fi
     fi
     set -e
