@@ -8,6 +8,10 @@ Build Restyaboard in Docker.
 * Docker  
   https://www.docker.com/
 
+# Warning
+
+With the new version 0.3.0 pushed recently, I have tried to deal with an automatic upgrade from 0.2.1 to 0.3.0. Even if I have done a lot of test, take a full backup before !
+
 # Initial work
 
 This is a fork of the work of Namikingsoft (https://github.com/namikingsoft/docker-restyaboard) with some modifications:
@@ -33,6 +37,8 @@ This is a fork of the work of Namikingsoft (https://github.com/namikingsoft/dock
         * WEB_SERVER_NAME: server name for nginx configuration
         * MAIL_DOMAIN: domain for sending mail
         * MAIL_RELAYHOST: hostname of the relay host if needed (optional)
+        
+     Attention : Since version 0.3.0, the variables have been renamed, you have to review them
 
 3. docker-entrypoint.sh
   * The extracted files/directories from the Restyaboard zip archive now belong to root:www-data and other's permissions have been removed
