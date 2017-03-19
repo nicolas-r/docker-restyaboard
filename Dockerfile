@@ -1,33 +1,47 @@
-FROM debian:jessie
+FROM ubuntu:16.04
 
 ARG TERM=linux
 ARG DEBIAN_FRONTEND=noninteractive
 
 # restyaboard version
-ENV restyaboard_version=v0.2.1
+ENV RESTYABOARD_VERSION=v0.3
+
+# Some tuning
+RUN echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup \
+    && echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
+
+# Configure backports
+#RUN echo deb http://ftp.debian.org/debian jessie-backports main contrib non-free > /etc/apt/sources.list.d/jessie-backports.list
 
 # update & install package
 RUN apt-get update --yes \
-    && apt-get install --yes \
+    && apt-get install --yes --no-install-recommends \
     apt-utils \
     cron \
     curl \
+    ejabberd \
+    erlang-p1-pgsql \
+    geoip-database-extra \
+    imagemagick \
     less \
     nginx \
-    php5 \
-    php5-common \
-    php5-fpm \
-    php5-cli \
-    php5-curl \
-    php5-pgsql \
-    php5-ldap \
-    php5-imagick \
-    php5-imap \
-    postgresql-client-9.4 \
+    php \
+    php-cli \
+    php-common \
+    php-curl \
+    php-fpm \
+    php-geoip \
+    php-imagick \
+    php-imap \
+    php-ldap \
+    php-mbstring \
+    php-pgsql \
+    php-xml \
+    postgresql-client \
     postfix \
     syslog-ng-core \
     vim-nox \
-    zip \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Allow cron to run inside a container
@@ -43,10 +57,11 @@ RUN sed -i -E 's/^(\s*)system\(\);/\1unix-stream("\/dev\/log");/' /etc/syslog-ng
 RUN sed -i 's/^#\(SYSLOGNG_OPTS="--no-caps"\)/\1/g' /etc/default/syslog-ng
 
 # deploy app
-RUN curl -L -o /tmp/restyaboard.zip https://github.com/RestyaPlatform/board/releases/download/${restyaboard_version}/board-${restyaboard_version}.zip
+RUN curl -L -o /tmp/restyaboard.zip https://github.com/RestyaPlatform/board/releases/download/${RESTYABOARD_VERSION}/board-${RESTYABOARD_VERSION}.zip
 
-# volume
-#VOLUME /usr/share/nginx/html
+COPY ejabberd.yml /root
+COPY upgrade-0.3-0.3.1.sql /root
+COPY upgrade-0.2.1-0.3.sql /root
 
 # entry point
 COPY docker-entrypoint.sh /

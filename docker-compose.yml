@@ -1,9 +1,9 @@
 data:
     image: busybox
     volumes:
-        - /usr/share/elasticsearch/data
-        - /var/lib/postgresql/data
-        - /usr/share/nginx/html
+        - /docker/volumes/restya/es:/usr/share/elasticsearch/data
+        - /docker/volumes/restya/db:/var/lib/postgresql/data
+        - /docker/volumes/restya/nginx:/usr/share/nginx/html
     command: tail -f /dev/null
     restart: always
 
@@ -23,18 +23,25 @@ postgres:
     restart: always
 
 restyaboard:
-    build: .
+    image: restyaboard:0.3.0
     environment:
-        POSTGRES_APP_DB_HOST: postgres
-        POSTGRES_APP_DB_PORT: 5432
-        POSTGRES_APP_DB_NAME: restyaboard
-        POSTGRES_APP_DB_USER: restyaboard
-        POSTGRES_APP_DB_PASSWORD: restyaboard
-        TIMEZONE: Europe/Paris
-        WEB_SERVER_NAME: centos-docker
-        MAIL_DOMAIN: whisperingvault.net
+        RESTYA_DB_ADMIN_USER: postgres
+        RESTYA_DB_ADMIN_PASSWORD: postgres
+        RESTYA_DB_HOST: postgres
+        RESTYA_DB_PORT: 5432
+        RESTYA_DB_NAME: restyaboard
+        RESTYA_DB_USER: restyaboard
+        RESTYA_DB_PASSWORD: restyaboard
+        RESTYA_TIMEZONE: Europe/Paris
+        RESTYA_SERVER_NAME: centos-docker
+        RESTYA_MAIL_DOMAIN: whisperingvault.net
+        RESTYA_EJABBERD_DB_HOST: postgres
+        RESTYA_EJABBERD_DB_PORT: 5432
+        RESTYA_EJABBERD_DB_NAME: ejabberd
+        RESTYA_EJABBERD_DB_USER: ejabberd
+        RESTYA_EJABBERD_DB_PASSWORD: ejabberd
         # Optional
-        #MAIL_RELAYHOST: xxx 
+        #RESTYA_MAIL_RELAYHOST: xxx
     links:
         - elasticsearch:elasticsearch
         - postgres:postgres
