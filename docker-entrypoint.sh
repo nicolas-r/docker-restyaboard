@@ -4,10 +4,10 @@ RESTYABOARD_VERSION=v0.3
 
 function setup_timezone {
     if ! egrep -q "^${RESTYA_TIMEZONE}" /etc/timezone; then
-        echo "${RESTYA_TIMEZONE}" > /etc/timezone
+        ln -sf /usr/share/zoneinfo/${RESTYA_TIMEZONE} /etc/localtime
         DEBIAN_FRONTEND=noninteractive dpkg-reconfigure tzdata
     fi
-    if ! egrep -q "^date.timezone = ${TIMEZONE}" /etc/php/7.0/fpm/php.ini; then
+    if ! egrep -q "^date.timezone = ${RESTYA_TIMEZONE}" /etc/php/7.0/fpm/php.ini; then
         sed -i -e 's/^date.timezone.*/date.timezone = ${RESTYA_TIMEZONE}/g' /etc/php/7.0/fpm/php.ini
     fi
 }
