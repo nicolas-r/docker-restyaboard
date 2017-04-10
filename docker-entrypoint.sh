@@ -84,6 +84,13 @@ function create_database {
         psql -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;"
         psql -c "COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
         if [ "$?" = 0 ]; then
+            # Delete some duplicates entries
+            sed -i '3664d' /usr/share/nginx/html/sql/restyaboard_with_empty_data.sql
+            sed -i '3664d' /usr/share/nginx/html/sql/restyaboard_with_empty_data.sql
+            sed -i '3664d' /usr/share/nginx/html/sql/restyaboard_with_empty_data.sql
+            sed -i '3664d' /usr/share/nginx/html/sql/restyaboard_with_empty_data.sql
+            sed -i '3673d' /usr/share/nginx/html/sql/restyaboard_with_empty_data.sql
+
             # Populate database
             export PGUSER=${RESTYA_DB_USER}
             export PGPASSWORD=${RESTYA_DB_PASSWORD}
@@ -206,11 +213,10 @@ function upgrade_database {
     export PGUSER=${RESTYA_DB_USER}
     export PGPASSWORD=${RESTYA_DB_PASSWORD}
 
-    psql -P pager=off -d ${RESTYA_DB_NAME} -f /root/upgrade-0.2.1-0.3.sql
-    psql -P pager=off -d ${RESTYA_DB_NAME} -f /usr/share/nginx/html/sql/${RESTYABOARD_VERSION}.sql
-
     # Fix #705
     psql -P pager=off -d ${RESTYA_DB_NAME} -c "delete from settings where name in ('TODO', 'DOING', 'DONE') and setting_category_id = 3; delete from settings where id in (select id from settings where name = 'DEFAULT_CARD_VIEW' and setting_category_id = 3 order by id desc limit 1); delete from settings where id in (select id from settings where name in ('XMPP_CLIENT_RESOURCE_NAME', 'JABBER_HOST', 'BOSH_SERVICE_URL') and setting_category_id = 11 order by id desc limit 3); delete from settings where id in (select id from settings where name = 'chat.last_processed_chat_id' and setting_category_id = 0 order by id desc limit 1); delete from setting_categories where id in (select id from setting_categories where name = 'Cards Workflow' order by id desc limit 1);"
+
+    psql -P pager=off -d ${RESTYA_DB_NAME} -f /usr/share/nginx/html/sql/${RESTYABOARD_VERSION}.sql
 
     # Fix #768
     psql -P pager=off -d ${RESTYA_DB_NAME} -f /root/upgrade-0.3-0.3.1.sql

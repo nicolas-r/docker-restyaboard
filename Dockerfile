@@ -61,7 +61,6 @@ RUN curl -L -o /tmp/restyaboard.zip https://github.com/RestyaPlatform/board/rele
 
 COPY ejabberd.yml /root
 COPY upgrade-0.3-0.3.1.sql /root
-COPY upgrade-0.2.1-0.3.sql /root
 
 # entry point
 COPY docker-entrypoint.sh /
