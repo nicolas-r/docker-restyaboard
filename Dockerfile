@@ -3,26 +3,23 @@ FROM ubuntu:16.04
 ARG TERM=linux
 ARG DEBIAN_FRONTEND=noninteractive
 
-# restyaboard version
-ENV RESTYABOARD_VERSION=v0.3
+# Restyaboard version
+ENV RESTYABOARD_VERSION=v0.4.1
 
 # Some tuning
 RUN echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup \
     && echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
 
-# Configure backports
-#RUN echo deb http://ftp.debian.org/debian jessie-backports main contrib non-free > /etc/apt/sources.list.d/jessie-backports.list
-
-# update & install package
+# Update & install packages
 RUN apt-get update --yes \
     && apt-get install --yes --no-install-recommends \
     apt-utils \
     cron \
     curl \
-    ejabberd \
-    erlang-p1-pgsql \
+    file \
     geoip-database-extra \
     imagemagick \
+    jq \
     less \
     nginx \
     php \
@@ -36,7 +33,6 @@ RUN apt-get update --yes \
     php-ldap \
     php-mbstring \
     php-pgsql \
-    php-xml \
     postgresql-client \
     postfix \
     syslog-ng-core \
@@ -56,17 +52,21 @@ RUN sed -i -E 's/^(\s*)system\(\);/\1unix-stream("\/dev\/log");/' /etc/syslog-ng
 # http://serverfault.com/questions/524518/error-setting-capabilities-capability-management-disabled#
 RUN sed -i 's/^#\(SYSLOGNG_OPTS="--no-caps"\)/\1/g' /etc/default/syslog-ng
 
-# deploy app
+# Deploy app
 RUN curl -L -o /tmp/restyaboard.zip https://github.com/RestyaPlatform/board/releases/download/${RESTYABOARD_VERSION}/board-${RESTYABOARD_VERSION}.zip
 
-COPY ejabberd.yml /root
-COPY upgrade-0.3-0.3.1.sql /root
-COPY upgrade-0.2.1-0.3.sql /root
+# Deploy extensions
+RUN curl -L -s -o /tmp/apps.json https://raw.githubusercontent.com/RestyaPlatform/board-apps/master/apps.json && \
+    mkdir -p /root/apps && \
+    for fid in $(jq -r '.[] | .id + "-v" + .version' /tmp/apps.json); do \
+        curl -L -s -G -o /root/apps/$fid.zip https://github.com/RestyaPlatform/board-apps/releases/download/v1/$fid.zip; \
+    done && \
+    rm /tmp/apps.json
 
-# entry point
+# Entry point
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]
 
-# expose port
+# Expose port
 EXPOSE 80
