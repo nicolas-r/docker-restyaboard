@@ -5,25 +5,22 @@ data:
         - /docker/volumes/restya/db:/var/lib/postgresql/data
         - /docker/volumes/restya/nginx:/usr/share/nginx/html
     command: tail -f /dev/null
-    restart: always
 
 elasticsearch:
     image: elasticsearch
     volumes_from:
         - data
-    restart: always
 
 postgres:
-    image: postgres:9.4
+    image: postgres:9.6-alpine
     environment:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
     volumes_from:
         - data
-    restart: always
 
 restyaboard:
-    image: restyaboard:0.3.0
+    image: restyaboard:0.4.2
     environment:
         RESTYA_DB_ADMIN_USER: postgres
         RESTYA_DB_ADMIN_PASSWORD: postgres
@@ -35,11 +32,6 @@ restyaboard:
         RESTYA_TIMEZONE: Europe/Paris
         RESTYA_SERVER_NAME: centos-docker
         RESTYA_MAIL_DOMAIN: whisperingvault.net
-        RESTYA_EJABBERD_DB_HOST: postgres
-        RESTYA_EJABBERD_DB_PORT: 5432
-        RESTYA_EJABBERD_DB_NAME: ejabberd
-        RESTYA_EJABBERD_DB_USER: ejabberd
-        RESTYA_EJABBERD_DB_PASSWORD: ejabberd
         # Optional
         #RESTYA_MAIL_RELAYHOST: xxx
     links:
@@ -49,4 +41,3 @@ restyaboard:
         - 1234:80
     volumes_from:
         - data
-    restart: always
