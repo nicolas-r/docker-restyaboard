@@ -1,4 +1,4 @@
-# Docker Restyaboard
+# Docker image for Restyaboard
 
 Build Restyaboard in Docker.
 
@@ -7,10 +7,12 @@ Build Restyaboard in Docker.
 
 * Docker  
   https://www.docker.com/
+  
+* Initial work by [namikingsoft](https://github.com/namikingsoft/docker-restyaboard)
 
 # Warning
 
-With the new version 0.3.0 pushed recently, I have tried to deal with an automatic upgrade from 0.2.1 to 0.3.0. Even if I have done a lot of test, take a full backup before !
+* With the new version starting with 0.3.0 pushed recently, I have tried to deal with an automatic upgrade to the next version, for example 0.2.1 to 0.3.0 or 0.3.0 to 0.4.0 but not 0.2.1 to 0.4.0. Even if I have done a lot of test, take a full backup before !
 
 # Initial work
 
