@@ -1,0 +1,17 @@
+postgres94:
+    image: postgres:9.4
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+    volumes:
+        - /docker/volumes/restya/db:/var/lib/postgresql/data
+    links:
+        - postgres96:postgres96
+
+postgres96:
+    image: postgres:9.6-alpine
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+    volumes:
+        - /docker/volumes/restya/db/9.6:/var/lib/postgresql/data

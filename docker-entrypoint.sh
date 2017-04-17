@@ -39,7 +39,7 @@ function extract_extensions {
     mkdir -p /usr/share/nginx/html/client/apps
     for ext in $(ls /root/apps/*.zip); do
         if $(file ${ext} | grep -q Zip); then
-            unzip -q ${ext} -d "/usr/share/nginx/html/client/apps"
+            unzip -q -o ${ext} -d "/usr/share/nginx/html/client/apps"
         fi
     done
     chown -R root:www-data /usr/share/nginx/html/client/apps
