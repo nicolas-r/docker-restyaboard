@@ -2,7 +2,7 @@ data:
     image: busybox
     volumes:
         - /docker/volumes/restya/es:/usr/share/elasticsearch/data
-        - /docker/volumes/restya/db:/var/lib/postgresql/data
+        - /docker/volumes/restya/db/9.6:/var/lib/postgresql/data
         - /docker/volumes/restya/nginx:/usr/share/nginx/html
     command: tail -f /dev/null
 
